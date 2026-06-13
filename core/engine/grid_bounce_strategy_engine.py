@@ -139,7 +139,11 @@ class GridBounceStrategyEngine:
 
     @property
     def point(self) -> float:
-        """MT5 point size for this symbol, fetched live from the broker."""
+        """MT5 point size for this symbol, fetched live from the broker.
+        Custom override for BTCUSD: 1 UI pip = $1.00 price movement."""
+        if self.symbol == "BTCUSD":
+            return 1.0
+            
         info = mt5.symbol_info(self.mt5_symbol)
         return info.point if info else 0.00001
 
@@ -374,6 +378,10 @@ class GridBounceStrategyEngine:
         self.activity_log.log_info(
             "Center positions opened without TP/SL (will be added after second entry)"
         )
+        dist = self.grid_distance * self.point
+        self.activity_log.log_info(
+            f"Next triggers (SINGLE_LEVEL): UP at {(center + dist):.5f}, DOWN at {(center - dist):.5f}"
+        )
         
         # Store in grid_level_1
         if buy_ticket:
@@ -493,7 +501,7 @@ class GridBounceStrategyEngine:
             return
         
         mid = (ask + bid) / 2
-        grid_dist = self.grid_distance
+        grid_dist = self.grid_distance * self.point
         
         # --- SINGLE LEVEL PHASE ---
         if self.state.phase == "SINGLE_LEVEL":
@@ -549,7 +557,7 @@ class GridBounceStrategyEngine:
         center_level = self.state.grid_level_1
         if not center_level:
             return
-        new_price = center_level.price - self.grid_distance
+        new_price = center_level.price - (self.grid_distance * self.point)
         
         self.activity_log.log_info(f"Moving DOWN: Grid distance reached at {new_price:.2f}")
         
@@ -629,7 +637,7 @@ class GridBounceStrategyEngine:
         center_level = self.state.grid_level_1
         if not center_level:
             return
-        new_price = center_level.price + self.grid_distance
+        new_price = center_level.price + (self.grid_distance * self.point)
         
         self.activity_log.log_info(f"Moving UP: Grid distance reached at {new_price:.2f}")
         
@@ -802,7 +810,7 @@ class GridBounceStrategyEngine:
                 reference_level_price = self.state.grid_level_1.price if self.state.grid_level_1 else self.state.center_price
             
             adjusted_distance = self._adjusted_distance(mid, reference_level_price)
-            threshold = float(self.grid_distance) * float(factor)
+            threshold = float(self.grid_distance * self.point) * float(factor)
             
             if adjusted_distance >= threshold:
                 self.activity_log.log_info(
@@ -1010,7 +1018,7 @@ class GridBounceStrategyEngine:
             else:
                 reference_level_price = self.state.grid_level_1.price if self.state.grid_level_1 else self.state.center_price
             
-            threshold = float(self.grid_distance) * float(factor)
+            threshold = float(self.grid_distance * self.point) * float(factor)
             for fill_price in fill_prices:
                 adjusted_distance = self._adjusted_distance(fill_price, reference_level_price)
                 if adjusted_distance >= threshold:
@@ -1752,7 +1760,7 @@ class GridBounceStrategyEngine:
         mid = (ask + bid) / 2
         nearest_level_price = self._get_nearest_level_price(mid)
         adjusted_distance = self._adjusted_distance(mid, nearest_level_price)
-        threshold = float(self.grid_distance) * float(factor)
+        threshold = float(self.grid_distance * self.point) * float(factor)
 
         if adjusted_distance >= threshold:
             self.activity_log.log_info(

@@ -202,24 +202,28 @@ class TradingEngine:
                             break
                     
                     # 2. Collect active symbols from all orchestrators
-                    active_symbols = set()
+                    # 2. Collect active symbols and their mt5_symbols
+                    active_symbol_maps = {}
                     
                     for orch in all_orchestrators:
-                        active_symbols.update(orch.get_active_symbols())
+                        for sym in orch.get_active_symbols():
+                            strat = orch.strategies.get(sym)
+                            if strat:
+                                active_symbol_maps[sym] = strat.mt5_symbol
                     
                     # 2. Iterate and Fetch
-                    if not active_symbols:
+                    if not active_symbol_maps:
                         # Fallback to prevent tight loop if no bots
                         await asyncio.sleep(0.1)  # Small sleep when idle
                         continue
 
-                    for symbol in active_symbols:
+                    for symbol, mt5_symbol in active_symbol_maps.items():
                         # Ensure Symbol Selected (MT5 requirement)
-                        if not mt5.symbol_select(symbol, True):
+                        if not mt5.symbol_select(mt5_symbol, True):
                             continue
                         
                         # Direct API Call - Zero Network Latency
-                        tick = mt5.symbol_info_tick(symbol)
+                        tick = mt5.symbol_info_tick(mt5_symbol)
                         
                         if tick:
                             # Track stats
@@ -227,7 +231,7 @@ class TradingEngine:
                             self.stats["last_tick_time"] = datetime.now()
                             
                             # Get positions
-                            positions = mt5.positions_get(symbol=symbol)
+                            positions = mt5.positions_get(symbol=mt5_symbol)
                             pos_count = len(positions) if positions else 0
                             
                             tick_data = {

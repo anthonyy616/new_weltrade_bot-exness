@@ -360,10 +360,10 @@
                                     Type</label>
                                 <select id="account_type" onchange="scheduleAutoSave()"
                                     class="w-full p-1.5 text-sm rounded bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-600 text-slate-800 dark:text-slate-100 focus:outline-none focus:ring-1 focus:ring-blue-500">
-                                    <option value="Standard">Standard (EURUSDm suffix)</option>
+                                    <option value="Standard">Standard (m suffix e.g.EURUSDm)</option>
                                     <option value="Pro">Pro (no suffix)</option>
                                     <option value="Raw Spread">Raw Spread (no suffix)</option>
-                                    <option value="Zero">Zero (no suffix)</option>
+                                    <option value="Zero">Zero (z suffix e.g. EURUSDz) </option>
                                 </select>
                             </div>
 
@@ -1177,13 +1177,13 @@
 
         // Build payload from DOM values (used by manual save and auto-save)
         function buildConfigPayload() {
-            const payload = { 
-                global: { 
-                    max_runtime_minutes: parseInt(document.getElementById('max_runtime_minutes').value) || 0, 
+            const payload = {
+                global: {
+                    max_runtime_minutes: parseInt(document.getElementById('max_runtime_minutes').value) || 0,
                     volatility_tolerance: document.getElementById('volatility_tolerance')?.value || 'off',
                     account_type: document.getElementById('account_type')?.value || 'Standard'
-                }, 
-                symbols: {} 
+                },
+                symbols: {}
             };
             document.querySelectorAll('.symbol-check').forEach(cb => {
                 const symbol = cb.value;
