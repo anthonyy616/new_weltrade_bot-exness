@@ -818,6 +818,11 @@
             } else {
                 document.getElementById('volatility_tolerance').value = 'off';
             }
+            if (global.account_type) {
+                document.getElementById('account_type').value = global.account_type;
+            } else {
+                document.getElementById('account_type').value = 'Standard';
+            }
         }
 
         // Render per-asset settings accordion for each checked symbol
@@ -1172,7 +1177,14 @@
 
         // Build payload from DOM values (used by manual save and auto-save)
         function buildConfigPayload() {
-            const payload = { global: { max_runtime_minutes: parseInt(document.getElementById('max_runtime_minutes').value) || 0, volatility_tolerance: document.getElementById('volatility_tolerance')?.value || 'off' }, symbols: {} };
+            const payload = { 
+                global: { 
+                    max_runtime_minutes: parseInt(document.getElementById('max_runtime_minutes').value) || 0, 
+                    volatility_tolerance: document.getElementById('volatility_tolerance')?.value || 'off',
+                    account_type: document.getElementById('account_type')?.value || 'Standard'
+                }, 
+                symbols: {} 
+            };
             document.querySelectorAll('.symbol-check').forEach(cb => {
                 const symbol = cb.value;
                 const safeId = symbol.replace(/\s+/g, '_').replace(/[^a-zA-Z0-9_]/g, '');

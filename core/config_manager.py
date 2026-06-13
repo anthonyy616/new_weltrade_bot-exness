@@ -102,6 +102,17 @@ class ConfigManager:
                 
                 if is_new_format:
                     self.config = loaded
+                    # Clean up any obsolete symbols that were in older configs
+                    if "symbols" in self.config:
+                        obsolete = [s for s in self.config["symbols"] if s not in AVAILABLE_SYMBOLS]
+                        for s in obsolete:
+                            del self.config["symbols"][s]
+                        # Ensure all available symbols exist
+                        for s in AVAILABLE_SYMBOLS:
+                            if s not in self.config["symbols"]:
+                                self.config["symbols"][s] = get_default_symbol_config()
+                        if obsolete:
+                            self.save_config()
                 else:
                     # Migrate from old format (symbols is a list or missing)
                     print(f"[CONFIG] Migrating config to multi-asset format...")
