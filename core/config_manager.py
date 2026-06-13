@@ -21,12 +21,12 @@ AVAILABLE_SYMBOLS = [
 # Standard: 'm' suffix (e.g. EURUSDm)
 # Pro: no suffix
 # Raw Spread: no suffix
-# Zero: no suffix
+# Zero: z
 ACCOUNT_TYPE_SUFFIX = {
     "Standard": "m",
     "Pro": "",
     "Raw Spread": "",
-    "Zero": "",
+    "Zero": "z",
 }
 
 MAX_POSITION_LIMIT = 60

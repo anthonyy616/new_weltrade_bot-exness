@@ -1,7 +1,8 @@
 {
     "global": {
-        "max_runtime_minutes": 240,
-        "volatility_tolerance": "1.5"
+        "max_runtime_minutes": 120,
+        "volatility_tolerance": "off",
+        "account_type": "Standard"
     },
     "symbols": {
         "EURUSD": {
@@ -1097,7 +1098,7 @@
             "max_positions": 3
         },
         "BTCUSD": {
-            "enabled": false,
+            "enabled": true,
             "grid_distance": 50.0,
             "tp_pips": 150.0,
             "sl_pips": 200.0,

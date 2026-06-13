@@ -2,7 +2,7 @@
     "global": {
         "max_runtime_minutes": 120,
         "volatility_tolerance": "off",
-        "account_type": "Standard"
+        "account_type": "Zero"
     },
     "symbols": {
         "EURUSD": {
@@ -1099,13 +1099,13 @@
         },
         "BTCUSD": {
             "enabled": true,
-            "grid_distance": 50.0,
-            "tp_pips": 150.0,
-            "sl_pips": 200.0,
-            "second_entry_buy_tp_pips": 150.0,
-            "second_entry_buy_sl_pips": 200.0,
-            "second_entry_sell_tp_pips": 150.0,
-            "second_entry_sell_sl_pips": 200.0,
+            "grid_distance": 10.0,
+            "tp_pips": 15.0,
+            "sl_pips": 25.0,
+            "second_entry_buy_tp_pips": 15.0,
+            "second_entry_buy_sl_pips": 15.0,
+            "second_entry_sell_tp_pips": 15.0,
+            "second_entry_sell_sl_pips": 15.0,
             "sets": 1,
             "sets_config": [
                 {
