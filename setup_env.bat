@@ -1,13 +1,13 @@
 @echo off
 :: ============================================================
-::  Weltrade Bot - Environment Setup Script
+::  Exness MT5 Bot - Environment Setup Script
 ::  Run this once on your VPS to configure your credentials.
 ::  Double-click the file or run it from Command Prompt.
 :: ============================================================
 
 echo.
 echo  =========================================
-echo   Weltrade Bot - Credential Setup
+echo   Exness MT5 Bot - Credential Setup
 echo  =========================================
 echo.
 echo  This script will create your .env file with
@@ -18,7 +18,7 @@ echo.
 :: Check if we are in the right folder
 if not exist "main.py" (
     echo  ERROR: Please run this script from inside the bot folder.
-    echo  Example: cd C:\weltrade-bot  then run setup_env.bat
+    echo  Example: cd C:\exness-bot  then run setup_env.bat
     pause
     exit /b 1
 )
@@ -27,17 +27,17 @@ echo  --- MetaTrader 5 Login ---
 echo.
 set /p MT5_LOGIN= Enter your MT5 account number (digits only): 
 set /p MT5_PASSWORD= Enter your MT5 password: 
-set /p MT5_SERVER= Enter your MT5 server name (e.g. Weltrade-Live): 
+set /p MT5_SERVER= Enter your MT5 server name (e.g. ExnessGlobal-Live): 
 
 echo.
 echo  --- MetaTrader 5 Terminal Path ---
 echo  This is the full path to your terminal64.exe file.
-echo  Default is usually: C:\Program Files\Weltrade MT5\terminal64.exe
+echo  Default is usually: C:\Program Files\Exness MT5 Terminal\terminal64.exe
 echo.
 set /p MT5_PATH= Enter full path to terminal64.exe (or press Enter for default): 
 
 if "%MT5_PATH%"=="" (
-    set MT5_PATH=C:\Program Files\Weltrade MT5\terminal64.exe
+    set MT5_PATH=C:\Program Files\Exness MT5 Terminal\terminal64.exe
 )
 
 echo.

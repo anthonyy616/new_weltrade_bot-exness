@@ -13,32 +13,12 @@ from core.persistence.repository import Repository
 logger = logging.getLogger("pair_strategy")
 mt5: Any = mt5_module
 
-# --- Hardcoded immutable asset limits (module-level constants) ---
-MAX_LOT_PER_ASSET = {
-    "FX Vol 20": 7,
-    "FX Vol 40": 4,
-    "FX Vol 60": 5,
-    "FX Vol 80": 1,
-    "FX Vol 99": 4,
-    "SFX Vol 20": 5,
-    "SFX Vol 40": 1,
-    "SFX Vol 60": 1,
-    "SFX Vol 80": 2,
-    "SFX Vol 99": 2,
-}
-
-MIN_STOP_PIPS_PER_ASSET = {
-    "FX Vol 20": 11,
-    "FX Vol 40": 27,
-    "FX Vol 60": 19,
-    "FX Vol 80": 34,
-    "FX Vol 99": 42,
-    "SFX Vol 20": 21,
-    "SFX Vol 40": 74,
-    "SFX Vol 60": 59,
-    "SFX Vol 80": 86,
-    "SFX Vol 99": 18,
-}
+# --- Exness asset limits ---
+# Exness has no per-asset volume cap; broker maximum is 200 lots for all symbols.
+EXNESS_MAX_LOT = 200
+# Stop level is always 0 on Exness — INVALID_STOPS retries are effectively unreachable,
+# but the retry block is kept for safety with a conservative fallback of 0 extra pips.
+EXNESS_FALLBACK_STOP_PIPS = 0
 
 
 
@@ -136,6 +116,32 @@ class GridBounceStrategyEngine:
     @property
     def config(self) -> Dict[str, Any]:
         return self.config_manager.get_symbol_config(self.symbol) or {}
+
+    @property
+    def symbol_suffix(self) -> str:
+        """Returns the MT5 symbol suffix for the configured Exness account type."""
+        from core.config_manager import ACCOUNT_TYPE_SUFFIX
+        acct = self.config_manager.get_global_config().get('account_type', 'Standard')
+        return ACCOUNT_TYPE_SUFFIX.get(acct, 'm')
+
+    @property
+    def mt5_symbol(self) -> str:
+        """Full MT5 symbol with account-type suffix, with automatic fallback to plain base name."""
+        suffix = self.symbol_suffix
+        if suffix:
+            candidate = self.symbol + suffix
+            info = mt5.symbol_info(candidate)
+            if info is not None:
+                mt5.symbol_select(candidate, True)
+                return candidate
+        # Fallback: plain base name (Pro / Zero / Raw Spread accounts or if suffixed name not found)
+        return self.symbol
+
+    @property
+    def point(self) -> float:
+        """MT5 point size for this symbol, fetched live from the broker."""
+        info = mt5.symbol_info(self.mt5_symbol)
+        return info.point if info else 0.00001
 
     @property
     def grid_distance(self) -> float:
@@ -263,7 +269,7 @@ class GridBounceStrategyEngine:
 
     @property
     def current_price(self) -> float:
-        tick = mt5.symbol_info_tick(self.symbol)
+        tick = mt5.symbol_info_tick(self.mt5_symbol)
         if tick:
             return (tick.ask + tick.bid) / 2
         return self.state.center_price
@@ -333,7 +339,7 @@ class GridBounceStrategyEngine:
         self.graceful_stop = False
         
         # Get current tick
-        tick = mt5.symbol_info_tick(self.symbol)
+        tick = mt5.symbol_info_tick(self.mt5_symbol)
         if not tick:
             self.activity_log.log_error("Failed to get tick for start")
             return
@@ -1159,7 +1165,7 @@ class GridBounceStrategyEngine:
 
         request = {
             "action": mt5.TRADE_ACTION_SLTP,
-            "symbol": self.symbol,
+            "symbol": self.mt5_symbol,
             "position": ticket,
             "sl": float(aligned_sl),
             "tp": float(aligned_tp),
@@ -1214,7 +1220,7 @@ class GridBounceStrategyEngine:
         - Custom singles (position_type='single_custom') close without triggering reset
         - Pair positions (position_type='pair') trigger nuclear reset
         """
-        positions = mt5.positions_get(symbol=self.symbol)
+        positions = mt5.positions_get(symbol=self.mt5_symbol)
         current_tickets = set()
         if positions:
             for pos in positions:
@@ -1382,7 +1388,7 @@ class GridBounceStrategyEngine:
         self.activity_log.log_phase_transition("*", "RESETTING")
         
         # Close ALL positions
-        positions = mt5.positions_get(symbol=self.symbol)
+        positions = mt5.positions_get(symbol=self.mt5_symbol)
         closed_count = 0
         if positions:
             for pos in positions:
@@ -1508,7 +1514,7 @@ class GridBounceStrategyEngine:
             return False
         
         pos = positions[0]
-        tick = mt5.symbol_info_tick(self.symbol)
+        tick = mt5.symbol_info_tick(self.mt5_symbol)
         if not tick:
             return False
         
@@ -1521,7 +1527,7 @@ class GridBounceStrategyEngine:
         
         request = {
             "action": mt5.TRADE_ACTION_DEAL,
-            "symbol": self.symbol,
+            "symbol": self.mt5_symbol,
             "volume": pos.volume,
             "type": close_type,
             "position": ticket,
@@ -1545,7 +1551,7 @@ class GridBounceStrategyEngine:
         PRESERVED FROM ORIGINAL (with minor modifications)
         Send market order to MT5, returns (ticket, entry_price, tp_price, sl_price)
         """
-        tick = mt5.symbol_info_tick(self.symbol)
+        tick = mt5.symbol_info_tick(self.mt5_symbol)
         if not tick:
             self.activity_log.log_error(f"No tick for {leg_name}")
             return 0, 0.0, 0.0, 0.0
@@ -1564,23 +1570,25 @@ class GridBounceStrategyEngine:
             tp = 0.0
             sl = 0.0
         else:
-            # use pip offsets (relative distances) rather than absolute overrides
+            # Convert user-input pips to price distance using MT5 point size
+            # 1 pip = 1 MT5 point (fetched live from broker symbol_info)
+            pt = self.point
             tp_pips = tp_pips_override if tp_pips_override is not None else self.tp_pips
             sl_pips = sl_pips_override if sl_pips_override is not None else self.sl_pips
             if direction == "buy":
-                tp = exec_price + float(tp_pips)
-                sl = exec_price - float(sl_pips)
+                tp = exec_price + float(tp_pips) * pt
+                sl = exec_price - float(sl_pips) * pt
             else:
-                tp = exec_price - float(tp_pips)
-                sl = exec_price + float(sl_pips)
+                tp = exec_price - float(tp_pips) * pt
+                sl = exec_price + float(sl_pips) * pt
         
         if not skip_tp_sl:
-            # Stops level safety
-            symbol_info = mt5.symbol_info(self.symbol)
+            # Stops level safety check (stop_level is 0 on Exness, but kept as a safety guard)
+            symbol_info = mt5.symbol_info(self.mt5_symbol)
             if symbol_info:
                 point = symbol_info.point
-                stops_level = max(symbol_info.trade_stops_level, 10)
-                min_dist = stops_level * point
+                stops_level = symbol_info.trade_stops_level  # 0 on Exness
+                min_dist = stops_level * symbol_info.point
                 
                 if direction == "buy":
                     if sl > check_price - min_dist:
@@ -1594,13 +1602,13 @@ class GridBounceStrategyEngine:
                         tp = check_price - min_dist
         
         # Snapshot existing tickets
-        positions_before = mt5.positions_get(symbol=self.symbol)
+        positions_before = mt5.positions_get(symbol=self.mt5_symbol)
         existing_tickets = set(pos.ticket for pos in positions_before) if positions_before else set()
         
         # Send order
         request = {
             "action": mt5.TRADE_ACTION_DEAL,
-            "symbol": self.symbol,
+            "symbol": self.mt5_symbol,
             "volume": float(lot_size),
             "type": order_type,
             "price": exec_price,
@@ -1625,10 +1633,12 @@ class GridBounceStrategyEngine:
         if result.retcode != mt5.TRADE_RETCODE_DONE:
             invalid_code = getattr(mt5, 'TRADE_RETCODE_INVALID_STOPS', 10016)
             if result.retcode == invalid_code:
-                stop_pips = MIN_STOP_PIPS_PER_ASSET.get(self.symbol, 10)
-                symbol_info = mt5.symbol_info(self.symbol)
-                point = symbol_info.point if symbol_info else 1.0
-                fresh_tick = mt5.symbol_info_tick(self.symbol)
+                # On Exness stop_level=0, so this branch is effectively unreachable.
+                # Kept as a safety net with a minimal fallback.
+                stop_pips = EXNESS_FALLBACK_STOP_PIPS
+                symbol_info = mt5.symbol_info(self.mt5_symbol)
+                point = symbol_info.point if symbol_info else 0.00001
+                fresh_tick = mt5.symbol_info_tick(self.mt5_symbol)
                 retry_exec_price = (fresh_tick.ask if direction == 'buy' else fresh_tick.bid) if fresh_tick else exec_price
                 if direction == 'buy':
                     new_sl = retry_exec_price - float(stop_pips) * point
@@ -1636,7 +1646,7 @@ class GridBounceStrategyEngine:
                     new_sl = retry_exec_price + float(stop_pips) * point
 
                 if symbol_info and not skip_tp_sl:
-                    stops_level = max(symbol_info.trade_stops_level, 10)
+                    stops_level = symbol_info.trade_stops_level  # 0 on Exness
                     min_dist = stops_level * point
                     check_price = (fresh_tick.bid if direction == 'buy' else fresh_tick.ask) if fresh_tick else (tick.bid if direction == 'buy' else tick.ask)
                     if direction == 'buy':
@@ -1671,7 +1681,7 @@ class GridBounceStrategyEngine:
         await asyncio.sleep(0.1)
         
         # Find new position
-        positions_after = mt5.positions_get(symbol=self.symbol)
+        positions_after = mt5.positions_get(symbol=self.mt5_symbol)
         actual_entry = exec_price
         actual_ticket = ticket
         
@@ -1698,10 +1708,10 @@ class GridBounceStrategyEngine:
                                        sl_pips_override: Optional[float] = None,
                                        skip_tp_sl: bool = False) -> List[Tuple[int, float, float, float]]:
         """
-        Split large lots into multiple orders not exceeding MAX_LOT_PER_ASSET and execute sequentially.
+        Split large lots into multiple orders not exceeding EXNESS_MAX_LOT and execute sequentially.
         Returns list of (ticket, entry, tp, sl) tuples in call order.
         """
-        max_lot = MAX_LOT_PER_ASSET.get(self.symbol, 100)
+        max_lot = EXNESS_MAX_LOT  # Always 200 for all Exness symbols
         if lot_size <= max_lot:
             res = await self._execute_market_order(direction, lot_size, leg_name, target_price, tp_pips_override, sl_pips_override, skip_tp_sl)
             return [res]
@@ -1760,21 +1770,21 @@ class GridBounceStrategyEngine:
         the caller should treat the returned values as virtual stops.
         """
         if direction == "buy":
-            tp = entry_price + self.tp_pips
-            sl = entry_price - self.sl_pips
+            tp = entry_price + self.tp_pips * self.point
+            sl = entry_price - self.sl_pips * self.point
         else:
-            tp = entry_price - self.tp_pips
-            sl = entry_price + self.sl_pips
+            tp = entry_price - self.tp_pips * self.point
+            sl = entry_price + self.sl_pips * self.point
 
         tick = mt5.symbol_info_tick(self.symbol)
         if not tick:
             self.activity_log.log_error(f"Cannot modify position {ticket}: no tick data")
             return False, float(tp), float(sl)
 
-        symbol_info = mt5.symbol_info(self.symbol)
+        symbol_info = mt5.symbol_info(self.mt5_symbol)
         if symbol_info:
             point = symbol_info.point
-            stops_level = max(symbol_info.trade_stops_level, 10)
+            stops_level = symbol_info.trade_stops_level  # 0 on Exness
             min_dist = stops_level * point
             check_price = tick.bid if direction == "buy" else tick.ask
 
@@ -1791,7 +1801,7 @@ class GridBounceStrategyEngine:
 
         request = {
             "action": mt5.TRADE_ACTION_SLTP,
-            "symbol": self.symbol,
+            "symbol": self.mt5_symbol,
             "position": ticket,
             "sl": float(sl),
             "tp": float(tp),
@@ -1985,7 +1995,7 @@ class GridBounceStrategyEngine:
         self.activity_log.log_info("TERMINATE: Closing all positions...")
         
         # Close all positions
-        positions = mt5.positions_get(symbol=self.symbol)
+        positions = mt5.positions_get(symbol=self.mt5_symbol)
         closed_count = 0
         if positions:
             for pos in positions:

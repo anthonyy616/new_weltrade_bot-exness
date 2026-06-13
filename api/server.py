@@ -31,7 +31,7 @@ if os.path.exists(DB_PATH):
     except Exception as e:
         print(f"[STARTUP] Could not clean DB (may be locked): {e}")
 
-app = FastAPI()
+app = FastAPI(title="Exness MT5 Bot")
 
 app.add_middleware(
     CORSMiddleware,
@@ -91,6 +91,7 @@ class GlobalConfig(BaseModel):
     """Global settings"""
     max_runtime_minutes: Optional[int] = None
     volatility_tolerance: Optional[str] = None
+    account_type: Optional[str] = None
 
 class ConfigUpdate(BaseModel):
     """Multi-asset config update payload"""

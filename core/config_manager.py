@@ -2,21 +2,32 @@ import json
 import os
 from typing import Dict, Any, List, Optional
 
-# All available trading symbols
+# All available trading symbols (base names, without broker suffix)
 AVAILABLE_SYMBOLS = [
-    # FX Indices
-    "FX Vol 20", "FX Vol 40", "FX Vol 60", "FX Vol 80", "FX Vol 99",
-    # SFX Indices
-    "SFX Vol 20", "SFX Vol 40", "SFX Vol 60", "SFX Vol 80", "SFX Vol 99",
-    # FlipX Indices
-    "FlipX 1", "FlipX 2", "FlipX 3", "FlipX 4", "FlipX 5",
-    # PainX Indices
-    "PainX 400", "PainX 600", "PainX 800", "PainX 999", "PainX 1200",
-    # GainX Indices
-    "GainX 400", "GainX 600", "GainX 800", "GainX 999", "GainX 1200",
-    # Other Indices
-    "SwitchX 600", "SwitchX 1200", "SwitchX 1800", "BreakX 1200", "BreakX 1800"
+    # Majors
+    "EURUSD", "GBPUSD", "USDJPY", "USDCHF", "USDCAD", "AUDUSD", "NZDUSD",
+    # Minors
+    "EURGBP", "EURJPY", "EURCAD", "EURCHF", "EURAUD", "EURNZD",
+    "GBPJPY", "GBPAUD", "GBPCAD", "GBPCHF", "GBPNZD",
+    "AUDJPY", "AUDCAD", "AUDCHF", "AUDNZD",
+    "CADJPY", "CHFJPY", "NZDJPY", "NZDCAD", "NZDCHF",
+    # Gold
+    "XAUUSD",
+    # Crypto
+    "BTCUSD", "ETHUSD",
 ]
+
+# Exness account type -> MT5 symbol suffix mapping
+# Standard: 'm' suffix (e.g. EURUSDm)
+# Pro: no suffix
+# Raw Spread: no suffix
+# Zero: no suffix
+ACCOUNT_TYPE_SUFFIX = {
+    "Standard": "m",
+    "Pro": "",
+    "Raw Spread": "",
+    "Zero": "",
+}
 
 MAX_POSITION_LIMIT = 60
 
@@ -163,6 +174,11 @@ class ConfigManager:
                 if val not in ("off", "1.5", "1.75", "2.0", "2.25", "2.5"):
                     # reject invalid value by removing it
                     global_updates.pop("volatility_tolerance", None)
+            # Validate account_type if provided
+            if "account_type" in global_updates:
+                val = global_updates.get("account_type")
+                if val not in ACCOUNT_TYPE_SUFFIX:
+                    global_updates.pop("account_type", None)
             self.config["global"].update(global_updates)
         
         # Handle symbol-specific settings
@@ -335,7 +351,8 @@ class ConfigManager:
         return {
             "global": {
                 "max_runtime_minutes": 0,
-                "volatility_tolerance": "off"
+                "volatility_tolerance": "off",
+                "account_type": "Standard",
             },
             "symbols": {
                 symbol: get_default_symbol_config()

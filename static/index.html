@@ -15,7 +15,7 @@
     </script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Weltrade MT5 Bot</title>
+    <title>Exness MT5 Bot</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
@@ -42,7 +42,7 @@
     <div id="login-modal" class="fixed inset-0 bg-black/80 backdrop-blur-md z-50 flex items-center justify-center">
         <div
             class="bg-white dark:bg-slate-800 p-8 rounded-lg shadow-2xl w-full max-w-md border border-slate-200 dark:border-slate-700">
-            <h2 class="text-2xl font-bold text-center mb-6 text-blue-500">Weltrade Bot Login</h2>
+            <h2 class="text-2xl font-bold text-center mb-6 text-blue-500">Exness Bot Login</h2>
             <form id="form-login" onsubmit="handleSupabaseLogin(event)" class="space-y-4">
                 <div>
                     <label class="block text-sm font-medium mb-1">Email</label>
@@ -136,7 +136,7 @@
 
     <div id="dashboard" class="max-w-6xl mx-auto space-y-4 md:space-y-6 hidden">
         <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-            <h1 class="text-xl sm:text-2xl md:text-3xl font-bold text-blue-600 dark:text-blue-500">Weltrade MT5 Bot</h1>
+            <h1 class="text-xl sm:text-2xl md:text-3xl font-bold text-blue-600 dark:text-blue-500">Exness MT5 Bot</h1>
             <div class="flex flex-wrap items-center gap-2 sm:gap-3">
                 <div id="status-badge"
                     class="flex items-center gap-2 px-2 sm:px-3 py-1 sm:py-1.5 rounded-full text-xs font-medium bg-slate-200 text-slate-500 dark:bg-slate-800 dark:text-slate-400">
@@ -220,79 +220,86 @@
 
                     <div class="space-y-4">
                         <div>
-                            <label class="block text-xs font-bold text-gray-500 mb-2">Indices (Multi-Select)</label>
+                            <label class="block text-xs font-bold text-gray-500 mb-2">Assets (Multi-Select)</label>
                             <div
                                 class="grid grid-cols-2 gap-1 p-2 rounded bg-slate-50 dark:bg-slate-900 border border-slate-600 max-h-60 overflow-y-auto custom-scrollbar">
 
-                                <!-- FX Indices -->
+                                <!-- Majors -->
                                 <div
                                     class="col-span-2 text-[10px] font-bold text-blue-500 uppercase tracking-wider mb-1 mt-1">
-                                    FX Indices</div>
+                                    Majors</div>
                                 <label
-                                    class="flex items-center space-x-2 cursor-pointer hover:bg-slate-200 dark:hover:bg-slate-800 p-1 rounded transition">
-                                    <input type="checkbox" class="symbol-check accent-blue-600 h-4 w-4"
-                                        value="FX Vol 20">
-                                    <span class="text-xs font-medium">FX Vol 20</span>
-                                </label>
+                                    class="flex items-center space-x-2 cursor-pointer hover:bg-slate-200 dark:hover:bg-slate-800 p-1 rounded transition"><input
+                                        type="checkbox" class="symbol-check accent-blue-600 h-4 w-4"
+                                        value="EURUSD"><span class="text-xs font-medium">EURUSD</span></label>
                                 <label
-                                    class="flex items-center space-x-2 cursor-pointer hover:bg-slate-200 dark:hover:bg-slate-800 p-1 rounded transition">
-                                    <input type="checkbox" class="symbol-check accent-blue-600 h-4 w-4"
-                                        value="FX Vol 40">
-                                    <span class="text-xs font-medium">FX Vol 40</span>
-                                </label>
+                                    class="flex items-center space-x-2 cursor-pointer hover:bg-slate-200 dark:hover:bg-slate-800 p-1 rounded transition"><input
+                                        type="checkbox" class="symbol-check accent-blue-600 h-4 w-4"
+                                        value="GBPUSD"><span class="text-xs font-medium">GBPUSD</span></label>
                                 <label
-                                    class="flex items-center space-x-2 cursor-pointer hover:bg-slate-200 dark:hover:bg-slate-800 p-1 rounded transition">
-                                    <input type="checkbox" class="symbol-check accent-blue-600 h-4 w-4"
-                                        value="FX Vol 60">
-                                    <span class="text-xs font-medium">FX Vol 60</span>
-                                </label>
+                                    class="flex items-center space-x-2 cursor-pointer hover:bg-slate-200 dark:hover:bg-slate-800 p-1 rounded transition"><input
+                                        type="checkbox" class="symbol-check accent-blue-600 h-4 w-4"
+                                        value="USDJPY"><span class="text-xs font-medium">USDJPY</span></label>
                                 <label
-                                    class="flex items-center space-x-2 cursor-pointer hover:bg-slate-200 dark:hover:bg-slate-800 p-1 rounded transition">
-                                    <input type="checkbox" class="symbol-check accent-blue-600 h-4 w-4"
-                                        value="FX Vol 80">
-                                    <span class="text-xs font-medium">FX Vol 80</span>
-                                </label>
+                                    class="flex items-center space-x-2 cursor-pointer hover:bg-slate-200 dark:hover:bg-slate-800 p-1 rounded transition"><input
+                                        type="checkbox" class="symbol-check accent-blue-600 h-4 w-4"
+                                        value="USDCHF"><span class="text-xs font-medium">USDCHF</span></label>
                                 <label
-                                    class="flex items-center space-x-2 cursor-pointer hover:bg-slate-200 dark:hover:bg-slate-800 p-1 rounded transition">
-                                    <input type="checkbox" class="symbol-check accent-blue-600 h-4 w-4"
-                                        value="FX Vol 99">
-                                    <span class="text-xs font-medium">FX Vol 99</span>
-                                </label>
+                                    class="flex items-center space-x-2 cursor-pointer hover:bg-slate-200 dark:hover:bg-slate-800 p-1 rounded transition"><input
+                                        type="checkbox" class="symbol-check accent-blue-600 h-4 w-4"
+                                        value="USDCAD"><span class="text-xs font-medium">USDCAD</span></label>
+                                <label
+                                    class="flex items-center space-x-2 cursor-pointer hover:bg-slate-200 dark:hover:bg-slate-800 p-1 rounded transition"><input
+                                        type="checkbox" class="symbol-check accent-blue-600 h-4 w-4"
+                                        value="AUDUSD"><span class="text-xs font-medium">AUDUSD</span></label>
+                                <label
+                                    class="flex items-center space-x-2 cursor-pointer hover:bg-slate-200 dark:hover:bg-slate-800 p-1 rounded transition"><input
+                                        type="checkbox" class="symbol-check accent-blue-600 h-4 w-4"
+                                        value="NZDUSD"><span class="text-xs font-medium">NZDUSD</span></label>
 
-                                <!-- SFX Indices -->
+                                <!-- Minors -->
                                 <div
                                     class="col-span-2 text-[10px] font-bold text-purple-500 uppercase tracking-wider mt-3 mb-1 border-t border-slate-700 pt-2">
-                                    SFX Indices</div>
+                                    Minors</div>
                                 <label
-                                    class="flex items-center space-x-2 cursor-pointer hover:bg-slate-200 dark:hover:bg-slate-800 p-1 rounded transition">
-                                    <input type="checkbox" class="symbol-check accent-purple-600 h-4 w-4"
-                                        value="SFX Vol 20">
-                                    <span class="text-xs font-medium">SFX Vol 20</span>
-                                </label>
+                                    class="flex items-center space-x-2 cursor-pointer hover:bg-slate-200 dark:hover:bg-slate-800 p-1 rounded transition"><input
+                                        type="checkbox" class="symbol-check accent-purple-600 h-4 w-4"
+                                        value="EURJPY"><span class="text-xs font-medium">EURJPY</span></label>
                                 <label
-                                    class="flex items-center space-x-2 cursor-pointer hover:bg-slate-200 dark:hover:bg-slate-800 p-1 rounded transition">
-                                    <input type="checkbox" class="symbol-check accent-purple-600 h-4 w-4"
-                                        value="SFX Vol 40">
-                                    <span class="text-xs font-medium">SFX Vol 40</span>
-                                </label>
+                                    class="flex items-center space-x-2 cursor-pointer hover:bg-slate-200 dark:hover:bg-slate-800 p-1 rounded transition"><input
+                                        type="checkbox" class="symbol-check accent-purple-600 h-4 w-4"
+                                        value="EURAUD"><span class="text-xs font-medium">EURAUD</span></label>
+
                                 <label
-                                    class="flex items-center space-x-2 cursor-pointer hover:bg-slate-200 dark:hover:bg-slate-800 p-1 rounded transition">
-                                    <input type="checkbox" class="symbol-check accent-purple-600 h-4 w-4"
-                                        value="SFX Vol 60">
-                                    <span class="text-xs font-medium">SFX Vol 60</span>
-                                </label>
+                                    class="flex items-center space-x-2 cursor-pointer hover:bg-slate-200 dark:hover:bg-slate-800 p-1 rounded transition"><input
+                                        type="checkbox" class="symbol-check accent-purple-600 h-4 w-4"
+                                        value="GBPJPY"><span class="text-xs font-medium">GBPJPY</span></label>
                                 <label
-                                    class="flex items-center space-x-2 cursor-pointer hover:bg-slate-200 dark:hover:bg-slate-800 p-1 rounded transition">
-                                    <input type="checkbox" class="symbol-check accent-purple-600 h-4 w-4"
-                                        value="SFX Vol 80">
-                                    <span class="text-xs font-medium">SFX Vol 80</span>
-                                </label>
+                                    class="flex items-center space-x-2 cursor-pointer hover:bg-slate-200 dark:hover:bg-slate-800 p-1 rounded transition"><input
+                                        type="checkbox" class="symbol-check accent-purple-600 h-4 w-4"
+                                        value="GBPAUD"><span class="text-xs font-medium">GBPAUD</span></label>
+
+                                <!-- Gold -->
+                                <div
+                                    class="col-span-2 text-[10px] font-bold text-yellow-500 uppercase tracking-wider mt-3 mb-1 border-t border-slate-700 pt-2">
+                                    Gold</div>
                                 <label
-                                    class="flex items-center space-x-2 cursor-pointer hover:bg-slate-200 dark:hover:bg-slate-800 p-1 rounded transition">
-                                    <input type="checkbox" class="symbol-check accent-purple-600 h-4 w-4"
-                                        value="SFX Vol 99">
-                                    <span class="text-xs font-medium">SFX Vol 99</span>
-                                </label>
+                                    class="flex items-center space-x-2 cursor-pointer hover:bg-slate-200 dark:hover:bg-slate-800 p-1 rounded transition col-span-2"><input
+                                        type="checkbox" class="symbol-check accent-yellow-500 h-4 w-4"
+                                        value="XAUUSD"><span class="text-xs font-medium">XAUUSD</span></label>
+
+                                <!-- Crypto -->
+                                <div
+                                    class="col-span-2 text-[10px] font-bold text-orange-500 uppercase tracking-wider mt-3 mb-1 border-t border-slate-700 pt-2">
+                                    ₿ Crypto</div>
+                                <label
+                                    class="flex items-center space-x-2 cursor-pointer hover:bg-slate-200 dark:hover:bg-slate-800 p-1 rounded transition"><input
+                                        type="checkbox" class="symbol-check accent-orange-500 h-4 w-4"
+                                        value="BTCUSD"><span class="text-xs font-medium">BTCUSD</span></label>
+                                <label
+                                    class="flex items-center space-x-2 cursor-pointer hover:bg-slate-200 dark:hover:bg-slate-800 p-1 rounded transition"><input
+                                        type="checkbox" class="symbol-check accent-orange-500 h-4 w-4"
+                                        value="ETHUSD"><span class="text-xs font-medium">ETHUSD</span></label>
 
                             </div>
                         </div>
@@ -344,6 +351,19 @@
                                     <option value="2.0"><strong>2x</strong> / 100% slip</option>
                                     <option value="2.25"><strong>2.25x</strong> / 125% slip</option>
                                     <option value="2.5"><strong>2.5x</strong> / 150% slip</option>
+                                </select>
+                            </div>
+
+                            <!-- Account Type -->
+                            <div class="col-span-2">
+                                <label class="block text-[10px] text-gray-500 dark:text-gray-400 mb-0.5">Account
+                                    Type</label>
+                                <select id="account_type" onchange="scheduleAutoSave()"
+                                    class="w-full p-1.5 text-sm rounded bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-600 text-slate-800 dark:text-slate-100 focus:outline-none focus:ring-1 focus:ring-blue-500">
+                                    <option value="Standard">Standard (EURUSDm suffix)</option>
+                                    <option value="Pro">Pro (no suffix)</option>
+                                    <option value="Raw Spread">Raw Spread (no suffix)</option>
+                                    <option value="Zero">Zero (no suffix)</option>
                                 </select>
                             </div>
 
@@ -478,19 +498,10 @@
             chart: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="h-4 w-4 inline-block mr-1 text-purple-500"><path stroke-linecap="round" stroke-linejoin="round" d="M3 3v18h18"/></svg>`
         };
 
-        // Asset volume limits (frontend simulation only)
-        const ASSET_VOLUME_LIMITS = {
-            "FX Vol 20": 14,
-            "FX Vol 40": 6,
-            "FX Vol 60": 14,
-            "FX Vol 80": 9,
-            "FX Vol 99": 6,
-            "SFX Vol 20": 18,
-            "SFX Vol 40": 7,
-            "SFX Vol 60": 2,
-            "SFX Vol 80": 2,
-            "SFX Vol 99": 34,
-        };
+        // Asset volume limits — Exness has no per-asset cap, max is always 200
+        // Frontend simulation is kept but uses a universal 200-lot ceiling.
+        const ASSET_VOLUME_LIMITS = {}; // Empty: no per-symbol limits on Exness
+        const EXNESS_MAX_LOT = 200;
 
         // Simulation debounce timers per asset
         const _simulateTimers = {};
