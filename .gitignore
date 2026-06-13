@@ -1,0 +1,23 @@
+.env
+.venv/
+__pycache__/
+**/__pycache__/
+*.py[cod]
+*$py.class
+
+# Database files
+*.db
+db/
+
+# Logs
+*.log
+logs/
+**/logs/
+
+#Agent folder
+.agent/
+
+symbol_engine.py
+pair_strategy_engine.py
+
+personal/

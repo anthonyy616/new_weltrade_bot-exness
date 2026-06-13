@@ -1,0 +1,61 @@
+/* Clean, Minimalist UI Theme */
+
+body {
+  transition: background-color 0.3s, color 0.3s;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Custom Scrollbar */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background-color: #cbd5e1;
+  border-radius: 4px;
+}
+.dark .custom-scrollbar::-webkit-scrollbar-thumb {
+  background-color: #475569;
+}
+
+/* Loading Spinner */
+.loader {
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  border-top-color: currentColor;
+  border-radius: 50%;
+  width: 20px;
+  height: 20px;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* Session Logs popup */
+.session-log {
+  background-color: #f8fafc;
+  color: #0f172a;
+  padding: 1.5rem;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  font-size: 0.875rem;
+  white-space: pre-wrap;
+  line-height: 1.5;
+}
+.dark .session-log {
+  background-color: #020617;
+  color: #cbd5e1;
+}
+
+/* Inputs removing number arrows for a cleaner square look */
+input[type=number]::-webkit-inner-spin-button, 
+input[type=number]::-webkit-outer-spin-button { 
+  -webkit-appearance: none; 
+  margin: 0; 
+}
+input[type=number] {
+  -moz-appearance: textfield;
+}
