@@ -10,3 +10,4 @@ pydantic
 aiosqlite
 supabase
 psutil
+cachetools
