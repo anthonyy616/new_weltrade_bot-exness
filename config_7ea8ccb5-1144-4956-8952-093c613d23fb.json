@@ -1,8 +1,8 @@
 {
     "global": {
-        "max_runtime_minutes": 120,
+        "max_runtime_minutes": 600,
         "volatility_tolerance": "off",
-        "account_type": "Standard"
+        "account_type": "Zero"
     },
     "symbols": {
         "EURUSD": {
@@ -1099,42 +1099,90 @@
         },
         "BTCUSD": {
             "enabled": true,
-            "grid_distance": 10.0,
-            "tp_pips": 15.0,
-            "sl_pips": 20.0,
-            "second_entry_buy_tp_pips": 15.0,
-            "second_entry_buy_sl_pips": 15.0,
-            "second_entry_sell_tp_pips": 15.0,
-            "second_entry_sell_sl_pips": 15.0,
+            "grid_distance": 20.0,
+            "tp_pips": 25.0,
+            "sl_pips": 35.0,
+            "second_entry_buy_tp_pips": 25.0,
+            "second_entry_buy_sl_pips": 25.0,
+            "second_entry_sell_tp_pips": 25.0,
+            "second_entry_sell_sl_pips": 25.0,
             "sets": 1,
             "sets_config": [
                 {
                     "pair_buy_lots": [
-                        0.01,
-                        0.01
+                        0.1,
+                        0.2,
+                        0.3,
+                        0.4,
+                        0.5,
+                        0.6,
+                        0.7,
+                        0.8,
+                        0.9,
+                        1.0
                     ],
                     "pair_sell_lots": [
-                        0.01,
-                        0.01
+                        0.1,
+                        0.2,
+                        0.3,
+                        0.4,
+                        0.5,
+                        0.6,
+                        0.7,
+                        0.8,
+                        0.9,
+                        1.0
                     ],
                     "single_lots": [
-                        0.02
+                        0.25,
+                        0.35,
+                        0.45,
+                        0.55,
+                        0.65,
+                        0.75,
+                        0.85,
+                        0.95,
+                        1.5
                     ],
-                    "max_positions": 3
+                    "max_positions": 27
                 }
             ],
             "pair_buy_lots": [
-                0.01,
-                0.01
+                0.1,
+                0.2,
+                0.3,
+                0.4,
+                0.5,
+                0.6,
+                0.7,
+                0.8,
+                0.9,
+                1.0
             ],
             "pair_sell_lots": [
-                0.01,
-                0.01
+                0.1,
+                0.2,
+                0.3,
+                0.4,
+                0.5,
+                0.6,
+                0.7,
+                0.8,
+                0.9,
+                1.0
             ],
             "single_lots": [
-                0.02
+                0.25,
+                0.35,
+                0.45,
+                0.55,
+                0.65,
+                0.75,
+                0.85,
+                0.95,
+                1.5
             ],
-            "max_positions": 3
+            "max_positions": 27
         },
         "ETHUSD": {
             "enabled": false,
