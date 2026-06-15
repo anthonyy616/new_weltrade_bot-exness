@@ -141,18 +141,20 @@ class GridBounceStrategyEngine:
     def point(self) -> float:
         """MT5 point size for this symbol, fetched live from the broker.
         Custom override for BTCUSD: 1 UI pip = $1.00 price movement."""
-        if self.symbol == "BTCUSD":
+        if self.symbol == "BTCUSD" or self.symbol == "ETHUSD":
             return 1.0
         #so that 100 pips = 100$ movement, matching our own BTCUSD conversions e.g. 50000 -> 50100 for 100 pip move
         
-        if self.symbol == "GBPJPY" or self.symbol == "EURJPY":
+        if self.symbol == "GBPJPY" or self.symbol == "EURJPY" or self.symbol == "USDJPY":
             return 0.01
         #so that 10 pips = 1.0 movement, matching our own GBPJPY/EURJPY conventions e.g. 150.00 -> 150.10 for 10 pip move
         if self.symbol == "XAUUSD":
             return 0.1
             #so that 10 pips = $1.00 movement, matching our own XAUUSD conversions e.g. 5000 -> 5001 for 10 pip move
-        info = mt5.symbol_info(self.mt5_symbol)
-        return info.point if info else 0.00001
+            
+        # Default for standard currency pairs (EURUSD, GBPUSD, EURAUD, etc.)
+        # 1 UI pip = 0.0001 price movement (e.g. 1.0000 -> 1.0010 for 10 pips)
+        return 0.0001
 
     @property
     def grid_distance(self) -> float:
@@ -1791,7 +1793,7 @@ class GridBounceStrategyEngine:
             tp = entry_price - self.tp_pips * self.point
             sl = entry_price + self.sl_pips * self.point
 
-        tick = mt5.symbol_info_tick(self.symbol)
+        tick = mt5.symbol_info_tick(self.mt5_symbol) #use mt5 symbol because of different accounts on exness
         if not tick:
             self.activity_log.log_error(f"Cannot modify position {ticket}: no tick data")
             return False, float(tp), float(sl)
