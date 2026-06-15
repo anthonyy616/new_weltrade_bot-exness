@@ -1,12 +1,12 @@
 {
     "global": {
         "max_runtime_minutes": 60,
-        "volatility_tolerance": "off",
+        "volatility_tolerance": "2.0",
         "account_type": "Zero"
     },
     "symbols": {
         "EURUSD": {
-            "enabled": true,
+            "enabled": false,
             "grid_distance": 2.0,
             "tp_pips": 4.0,
             "sl_pips": 6.0,
@@ -93,7 +93,7 @@
             "max_positions": 27
         },
         "GBPUSD": {
-            "enabled": true,
+            "enabled": false,
             "grid_distance": 5.0,
             "tp_pips": 10.0,
             "sl_pips": 15.0,
@@ -414,7 +414,7 @@
             "max_positions": 3
         },
         "EURJPY": {
-            "enabled": true,
+            "enabled": false,
             "grid_distance": 2.0,
             "tp_pips": 4.0,
             "sl_pips": 6.0,
@@ -657,7 +657,7 @@
             "max_positions": 3
         },
         "GBPJPY": {
-            "enabled": true,
+            "enabled": false,
             "grid_distance": 3.0,
             "tp_pips": 6.0,
             "sl_pips": 9.0,
@@ -1251,7 +1251,7 @@
             "max_positions": 3
         },
         "XAUUSD": {
-            "enabled": true,
+            "enabled": false,
             "grid_distance": 15.0,
             "tp_pips": 20.0,
             "sl_pips": 25.0,
@@ -1425,7 +1425,7 @@
             "max_positions": 27
         },
         "ETHUSD": {
-            "enabled": true,
+            "enabled": false,
             "grid_distance": 1.0,
             "tp_pips": 2.0,
             "sl_pips": 3.0,
@@ -1433,6 +1433,267 @@
             "second_entry_buy_sl_pips": 2.0,
             "second_entry_sell_tp_pips": 2.0,
             "second_entry_sell_sl_pips": 2.0,
+            "sets": 1,
+            "sets_config": [
+                {
+                    "pair_buy_lots": [
+                        0.1,
+                        0.2,
+                        0.3,
+                        0.4,
+                        0.5,
+                        0.6,
+                        0.7,
+                        0.8,
+                        0.9,
+                        1.0
+                    ],
+                    "pair_sell_lots": [
+                        0.1,
+                        0.2,
+                        0.3,
+                        0.4,
+                        0.5,
+                        0.6,
+                        0.7,
+                        0.8,
+                        0.9,
+                        1.0
+                    ],
+                    "single_lots": [
+                        0.25,
+                        0.35,
+                        0.45,
+                        0.55,
+                        0.65,
+                        0.75,
+                        0.85,
+                        0.95,
+                        1.5
+                    ],
+                    "max_positions": 27
+                }
+            ],
+            "pair_buy_lots": [
+                0.1,
+                0.2,
+                0.3,
+                0.4,
+                0.5,
+                0.6,
+                0.7,
+                0.8,
+                0.9,
+                1.0
+            ],
+            "pair_sell_lots": [
+                0.1,
+                0.2,
+                0.3,
+                0.4,
+                0.5,
+                0.6,
+                0.7,
+                0.8,
+                0.9,
+                1.0
+            ],
+            "single_lots": [
+                0.25,
+                0.35,
+                0.45,
+                0.55,
+                0.65,
+                0.75,
+                0.85,
+                0.95,
+                1.5
+            ],
+            "max_positions": 27
+        },
+        "USTEC": {
+            "enabled": true,
+            "grid_distance": 20.0,
+            "tp_pips": 25.0,
+            "sl_pips": 35.0,
+            "second_entry_buy_tp_pips": 25.0,
+            "second_entry_buy_sl_pips": 25.0,
+            "second_entry_sell_tp_pips": 25.0,
+            "second_entry_sell_sl_pips": 25.0,
+            "sets": 1,
+            "sets_config": [
+                {
+                    "pair_buy_lots": [
+                        0.1,
+                        0.2,
+                        0.3,
+                        0.4,
+                        0.5,
+                        0.6,
+                        0.7,
+                        0.8,
+                        0.9,
+                        1.0
+                    ],
+                    "pair_sell_lots": [
+                        0.1,
+                        0.2,
+                        0.3,
+                        0.4,
+                        0.5,
+                        0.6,
+                        0.7,
+                        0.8,
+                        0.9,
+                        1.0
+                    ],
+                    "single_lots": [
+                        0.25,
+                        0.35,
+                        0.45,
+                        0.55,
+                        0.65,
+                        0.75,
+                        0.85,
+                        0.95,
+                        1.5
+                    ],
+                    "max_positions": 27
+                }
+            ],
+            "pair_buy_lots": [
+                0.1,
+                0.2,
+                0.3,
+                0.4,
+                0.5,
+                0.6,
+                0.7,
+                0.8,
+                0.9,
+                1.0
+            ],
+            "pair_sell_lots": [
+                0.1,
+                0.2,
+                0.3,
+                0.4,
+                0.5,
+                0.6,
+                0.7,
+                0.8,
+                0.9,
+                1.0
+            ],
+            "single_lots": [
+                0.25,
+                0.35,
+                0.45,
+                0.55,
+                0.65,
+                0.75,
+                0.85,
+                0.95,
+                1.5
+            ],
+            "max_positions": 27
+        },
+        "US500": {
+            "enabled": true,
+            "grid_distance": 3.0,
+            "tp_pips": 6.0,
+            "sl_pips": 9.0,
+            "second_entry_buy_tp_pips": 6.0,
+            "second_entry_buy_sl_pips": 6.0,
+            "second_entry_sell_tp_pips": 6.0,
+            "second_entry_sell_sl_pips": 6.0,
+            "sets": 1,
+            "sets_config": [
+                {
+                    "pair_buy_lots": [
+                        0.1,
+                        0.2,
+                        0.3,
+                        0.4,
+                        0.5,
+                        0.6,
+                        0.7,
+                        0.8,
+                        0.9,
+                        1.0
+                    ],
+                    "pair_sell_lots": [
+                        0.1,
+                        0.2,
+                        0.3,
+                        0.4,
+                        0.5,
+                        0.6,
+                        0.7,
+                        0.8,
+                        0.9,
+                        1.0
+                    ],
+                    "single_lots": [
+                        0.25,
+                        0.35,
+                        0.45,
+                        0.55,
+                        0.65,
+                        0.75,
+                        0.85,
+                        0.95,
+                        1.5
+                    ],
+                    "max_positions": 27
+                }
+            ],
+            "pair_buy_lots": [
+                0.1,
+                0.2,
+                0.3,
+                0.4,
+                0.5,
+                0.6,
+                0.7,
+                0.8,
+                0.9,
+                1.0
+            ],
+            "pair_sell_lots": [
+                0.1,
+                0.2,
+                0.3,
+                0.4,
+                0.5,
+                0.6,
+                0.7,
+                0.8,
+                0.9,
+                1.0
+            ],
+            "single_lots": [
+                0.25,
+                0.35,
+                0.45,
+                0.55,
+                0.65,
+                0.75,
+                0.85,
+                0.95,
+                1.5
+            ],
+            "max_positions": 27
+        },
+        "US30": {
+            "enabled": true,
+            "grid_distance": 20.0,
+            "tp_pips": 25.0,
+            "sl_pips": 35.0,
+            "second_entry_buy_tp_pips": 25.0,
+            "second_entry_buy_sl_pips": 25.0,
+            "second_entry_sell_tp_pips": 25.0,
+            "second_entry_sell_sl_pips": 25.0,
             "sets": 1,
             "sets_config": [
                 {

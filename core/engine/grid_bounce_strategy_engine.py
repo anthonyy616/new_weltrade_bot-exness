@@ -141,11 +141,11 @@ class GridBounceStrategyEngine:
     def point(self) -> float:
         """MT5 point size for this symbol, fetched live from the broker.
         Custom override for BTCUSD: 1 UI pip = $1.00 price movement."""
-        if self.symbol == "BTCUSD" or self.symbol == "ETHUSD":
+        if self.symbol in ["BTCUSD", "ETHUSD", "USTEC", "US500", "US30"]:
             return 1.0
         #so that 100 pips = 100$ movement, matching our own BTCUSD conversions e.g. 50000 -> 50100 for 100 pip move
         
-        if self.symbol == "GBPJPY" or self.symbol == "EURJPY" or self.symbol == "USDJPY":
+        if self.symbol in ["GBPJPY", "EURJPY", "USDJPY"]:
             return 0.01
         #so that 10 pips = 1.0 movement, matching our own GBPJPY/EURJPY conventions e.g. 150.00 -> 150.10 for 10 pip move
         if self.symbol == "XAUUSD":
@@ -351,10 +351,17 @@ class GridBounceStrategyEngine:
         self.running = True
         self.graceful_stop = False
         
-        # Get current tick
+        # Get current tick with retry to ensure valid prices
         tick = mt5.symbol_info_tick(self.mt5_symbol)
-        if not tick:
-            self.activity_log.log_error("Failed to get tick for start")
+        retries = 0
+        while (not tick or tick.ask <= 0 or tick.bid <= 0) and retries < 10:
+            await asyncio.sleep(0.5)
+            tick = mt5.symbol_info_tick(self.mt5_symbol)
+            retries += 1
+            
+        if not tick or tick.ask <= 0 or tick.bid <= 0:
+            self.activity_log.log_error("Failed to get valid tick for start. Market might be closed or symbol not subscribed.")
+            self.running = False
             return
         
         center = (tick.ask + tick.bid) / 2

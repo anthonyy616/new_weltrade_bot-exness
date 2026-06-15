@@ -218,11 +218,12 @@
                     Settings</h2>
                 <form onsubmit="updateConfig(event)" class="space-y-4">
                     <div class="text-xs sm:text-sm text-slate-600 dark:text-slate-400 mt-2 p-1.5 sm:p-2 bg-blue-50 dark:bg-blue-900/20 rounded border border-blue-200 dark:border-blue-800">
-                            <strong>Pip Size Guide:</strong>
+                            <strong>Pip Distance Guide:</strong>
                             <ul class="list-disc list-inside mt-1 space-y-0.5 text-xs">
-                                <li><strong>Standard Pairs (e.g. EURUSD, EURAUD):</strong> 10 pips = 0.0010 (e.g. 1.0000 &rarr; 1.0010)</li>
-                                <li><strong>JPY Pairs (e.g. USDJPY, GBPJPY):</strong> 10 pips = 0.10 (e.g. 150.00 &rarr; 150.10)</li>
+                                <li><strong>Standard Pairs (e.g. EURUSD):</strong> 10 pips = 0.0010 (e.g. 1.0000 &rarr; 1.0010)</li>
+                                <li><strong>JPY Pairs (e.g. USDJPY):</strong> 10 pips = 0.10 (e.g. 150.00 &rarr; 150.10)</li>
                                 <li><strong>Gold (XAUUSD):</strong> 10 pips = $1.00 (e.g. 2500.00 &rarr; 2501.00)</li>
+                                <li><strong>Indices (USTEC, US500, US30):</strong> 10 pips = $10.00 (e.g. 20000 &rarr; 20010)</li>
                                 <li><strong>Crypto (BTCUSD, ETHUSD):</strong> 100 pips = $100.00 (e.g. 50000 &rarr; 50100)</li>
                             </ul>
                         </div>
@@ -295,6 +296,26 @@
                                     class="flex items-center space-x-2 cursor-pointer hover:bg-slate-200 dark:hover:bg-slate-800 p-1 rounded transition col-span-2"><input
                                         type="checkbox" class="symbol-check accent-yellow-500 h-4 w-4"
                                         value="XAUUSD"><span class="text-xs font-medium">XAUUSD</span></label>
+
+                                <!-- Indices -->
+                                <div
+                                    class="col-span-2 text-[10px] font-bold text-red-500 uppercase tracking-wider mt-3 mb-1 border-t border-slate-700 pt-2">
+                                    Indices</div>
+                                <label
+                                    class="flex items-center space-x-2 cursor-pointer hover:bg-slate-200 dark:hover:bg-slate-800 p-1 rounded transition">
+                                    <input type="checkbox" class="symbol-check accent-red-500 h-4 w-4"
+                                        value="USTEC"><span class="text-xs font-medium">USTEC (Nasdaq)</span>
+                                </label>
+                                <label
+                                    class="flex items-center space-x-2 cursor-pointer hover:bg-slate-200 dark:hover:bg-slate-800 p-1 rounded transition">
+                                    <input type="checkbox" class="symbol-check accent-red-500 h-4 w-4"
+                                        value="US500"><span class="text-xs font-medium">US500 (S&P 500)</span>
+                                </label>
+                                <label
+                                    class="flex items-center space-x-2 cursor-pointer hover:bg-slate-200 dark:hover:bg-slate-800 p-1 rounded transition">
+                                    <input type="checkbox" class="symbol-check accent-red-500 h-4 w-4"
+                                        value="US30"><span class="text-xs font-medium">US30 (Dow Jones)</span>
+                                </label>
 
                                 <!-- Crypto -->
                                 <div

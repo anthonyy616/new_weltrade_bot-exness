@@ -13,6 +13,8 @@ AVAILABLE_SYMBOLS = [
     "CADJPY", "CHFJPY", "NZDJPY", "NZDCAD", "NZDCHF",
     # Gold
     "XAUUSD",
+    # Indices
+    "USTEC", "US500", "US30",
     # Crypto
     "BTCUSD", "ETHUSD",
 ]
