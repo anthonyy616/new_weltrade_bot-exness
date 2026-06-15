@@ -143,7 +143,14 @@ class GridBounceStrategyEngine:
         Custom override for BTCUSD: 1 UI pip = $1.00 price movement."""
         if self.symbol == "BTCUSD":
             return 1.0
-            
+        #so that 100 pips = 100$ movement, matching our own BTCUSD conversions e.g. 50000 -> 50100 for 100 pip move
+        
+        if self.symbol == "GBPJPY" or self.symbol == "EURJPY":
+            return 0.01
+        #so that 10 pips = 1.0 movement, matching our own GBPJPY/EURJPY conventions e.g. 150.00 -> 150.10 for 10 pip move
+        if self.symbol == "XAUUSD":
+            return 0.1
+            #so that 10 pips = $1.00 movement, matching our own XAUUSD conversions e.g. 5000 -> 5001 for 10 pip move
         info = mt5.symbol_info(self.mt5_symbol)
         return info.point if info else 0.00001
 
