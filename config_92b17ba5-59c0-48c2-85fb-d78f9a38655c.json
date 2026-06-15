@@ -1,6 +1,6 @@
 {
     "global": {
-        "max_runtime_minutes": 60,
+        "max_runtime_minutes": 10,
         "volatility_tolerance": "2.0",
         "account_type": "Zero"
     },
@@ -1251,14 +1251,14 @@
             "max_positions": 3
         },
         "XAUUSD": {
-            "enabled": false,
-            "grid_distance": 15.0,
-            "tp_pips": 20.0,
-            "sl_pips": 25.0,
-            "second_entry_buy_tp_pips": 20.0,
-            "second_entry_buy_sl_pips": 20.0,
-            "second_entry_sell_tp_pips": 20.0,
-            "second_entry_sell_sl_pips": 20.0,
+            "enabled": true,
+            "grid_distance": 20.0,
+            "tp_pips": 25.0,
+            "sl_pips": 35.0,
+            "second_entry_buy_tp_pips": 25.0,
+            "second_entry_buy_sl_pips": 25.0,
+            "second_entry_sell_tp_pips": 25.0,
+            "second_entry_sell_sl_pips": 25.0,
             "sets": 1,
             "sets_config": [
                 {
@@ -1513,13 +1513,13 @@
         },
         "USTEC": {
             "enabled": true,
-            "grid_distance": 20.0,
-            "tp_pips": 25.0,
-            "sl_pips": 35.0,
-            "second_entry_buy_tp_pips": 25.0,
-            "second_entry_buy_sl_pips": 25.0,
-            "second_entry_sell_tp_pips": 25.0,
-            "second_entry_sell_sl_pips": 25.0,
+            "grid_distance": 25.0,
+            "tp_pips": 30.0,
+            "sl_pips": 45.0,
+            "second_entry_buy_tp_pips": 30.0,
+            "second_entry_buy_sl_pips": 30.0,
+            "second_entry_sell_tp_pips": 30.0,
+            "second_entry_sell_sl_pips": 30.0,
             "sets": 1,
             "sets_config": [
                 {
