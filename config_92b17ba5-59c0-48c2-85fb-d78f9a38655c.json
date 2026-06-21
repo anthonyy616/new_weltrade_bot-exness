@@ -1,6 +1,6 @@
 {
     "global": {
-        "max_runtime_minutes": 30,
+        "max_runtime_minutes": 540,
         "volatility_tolerance": "2.0",
         "account_type": "Zero"
     },

@@ -179,8 +179,7 @@ all times.
   Operating System      Windows Server 2019, Windows 10, or Windows 11
                         (64-bit) PLEASE MAKE SURE THE OPERATING SYSTEM IS WINDOWS
 
-  RAM                   4 GB (preferably 8GB)
-
+  RAM                   4 GB 
   Storage               60 GB SSD
 
   CPU                   2 cores
@@ -228,6 +227,13 @@ Install these four things on your VPS in order.
 11. Click Download for Windows and run the installer.
 
 12. Accept all default options during installation.
+
+Note: There is no need to sign in any of your accounts after when installing VS Code so you can skip the option when it pops up
+
+        - After Install:
+            Open VS Code  -> On the navigation bar to the left, look for "extensions" and click on it -> Search "Python" and click install on the first python extension with about 200 million + downloads. -> After it installs click "Ctrl + Shift + P" or Go to "View" on the horizontal navigation bar on VS Code and click on "Command Palette"
+            
+            Then search for "Environments" and Click on "Python: Create Environment" -> Select ".venv Python 3.12" -> Tick the "reqirements.txt" box and press "Ok". When it's done installing, the bat scripts can be ran.
 
 **C --- Install Weltrade MetaTrader 5**
 

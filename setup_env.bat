@@ -58,15 +58,20 @@ if "%BOT_PORT%"=="" (
 set BOT_HOST=0.0.0.0
 
 :: Write the .env file
+:: NOTE: each value is wrapped in quotes here. This protects against
+:: special characters (&, ^, <, >, |) in passwords/keys being misread
+:: as command operators by cmd.exe during variable expansion - it is
+:: NOT about dotenv requiring quotes (it doesn't). python-dotenv strips
+:: the quotes automatically when the .env file is read.
 (
-echo MT5_LOGIN=%MT5_LOGIN%
-echo MT5_PASSWORD=%MT5_PASSWORD%
-echo MT5_SERVER=%MT5_SERVER%
-echo MT5_PATH=%MT5_PATH%
-echo SUPABASE_URL=%SUPABASE_URL%
-echo SUPABASE_KEY=%SUPABASE_KEY%
-echo BOT_HOST=%BOT_HOST%
-echo BOT_PORT=%BOT_PORT%
+echo MT5_LOGIN="%MT5_LOGIN%"
+echo MT5_PASSWORD="%MT5_PASSWORD%"
+echo MT5_SERVER="%MT5_SERVER%"
+echo MT5_PATH="%MT5_PATH%"
+echo SUPABASE_URL="%SUPABASE_URL%"
+echo SUPABASE_KEY="%SUPABASE_KEY%"
+echo BOT_HOST="%BOT_HOST%"
+echo BOT_PORT="%BOT_PORT%"
 ) > .env
 
 echo.
