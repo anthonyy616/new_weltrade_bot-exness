@@ -33,7 +33,7 @@
         }
     </script>
     <!-- Styles migrated to static/styles.css -->
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="static/styles.css">
 </head>
 
 <body
@@ -217,16 +217,21 @@
                     class="text-base sm:text-lg font-semibold mb-3 border-b pb-2 border-slate-200 dark:border-slate-700">
                     Settings</h2>
                 <form onsubmit="updateConfig(event)" class="space-y-4">
-                    <div class="text-xs sm:text-sm text-slate-600 dark:text-slate-400 mt-2 p-1.5 sm:p-2 bg-blue-50 dark:bg-blue-900/20 rounded border border-blue-200 dark:border-blue-800">
-                            <strong>Pip Distance Guide:</strong>
-                            <ul class="list-disc list-inside mt-1 space-y-0.5 text-xs">
-                                <li><strong>Standard Pairs (e.g. EURUSD):</strong> 10 pips = 0.0010 (e.g. 1.0000 &rarr; 1.0010)</li>
-                                <li><strong>JPY Pairs (e.g. USDJPY):</strong> 10 pips = 0.10 (e.g. 150.00 &rarr; 150.10)</li>
-                                <li><strong>Gold (XAUUSD):</strong> 10 pips = $1.00 (e.g. 2500.00 &rarr; 2501.00)</li>
-                                <li><strong>Indices (USTEC, US500, US30):</strong> 10 pips = $10.00 (e.g. 20000 &rarr; 20010)</li>
-                                <li><strong>Crypto (BTCUSD, ETHUSD):</strong> 100 pips = $100.00 (e.g. 50000 &rarr; 50100)</li>
-                            </ul>
-                        </div>
+                    <div
+                        class="text-xs sm:text-sm text-slate-600 dark:text-slate-400 mt-2 p-1.5 sm:p-2 bg-blue-50 dark:bg-blue-900/20 rounded border border-blue-200 dark:border-blue-800">
+                        <strong>Pip Distance Guide:</strong>
+                        <ul class="list-disc list-inside mt-1 space-y-0.5 text-xs">
+                            <li><strong>Standard Pairs (e.g. EURUSD):</strong> 10 pips = 0.0010 (e.g. 1.0000 &rarr;
+                                1.0010)</li>
+                            <li><strong>JPY Pairs (e.g. USDJPY):</strong> 10 pips = 0.10 (e.g. 150.00 &rarr; 150.10)
+                            </li>
+                            <li><strong>Gold (XAUUSD):</strong> 10 pips = $1.00 (e.g. 2500.00 &rarr; 2501.00)</li>
+                            <li><strong>Indices (USTEC, US500, US30):</strong> 10 pips = $10.00 (e.g. 20000 &rarr;
+                                20010)</li>
+                            <li><strong>Crypto (BTCUSD, ETHUSD):</strong> 100 pips = $100.00 (e.g. 50000 &rarr; 50100)
+                            </li>
+                        </ul>
+                    </div>
                     <div class="space-y-4">
                         <div>
                             <label class="block text-xs font-bold text-gray-500 mb-2">Assets (Multi-Select)</label>
@@ -350,7 +355,7 @@
                         <div id="asset-settings-container" class="space-y-2 mt-3">
                             <!-- Dynamic per-asset settings rendered here -->
                         </div>
-                        
+
                     </div>
 
                     <!-- Global Settings -->
