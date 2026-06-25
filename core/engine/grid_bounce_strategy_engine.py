@@ -685,6 +685,8 @@ class GridBounceStrategyEngine:
         
         self.state.position_counter += 3
         self.state.last_move_direction = "DOWN_TO_LOWER"
+        # Re-apply anchor alignment so bounce pair legs get anchor TP/SL (not fill-price TP/SL)
+        await self._apply_anchor_alignment()
         await self.save_state()
 
 
@@ -725,6 +727,8 @@ class GridBounceStrategyEngine:
         
         self.state.position_counter += 3
         self.state.last_move_direction = "UP_TO_UPPER"
+        # Re-apply anchor alignment so bounce pair legs get anchor TP/SL (not fill-price TP/SL)
+        await self._apply_anchor_alignment()
         await self.save_state()
 
 
@@ -783,35 +787,56 @@ class GridBounceStrategyEngine:
                 f"direction={direction} | pair_stage={pair_stage}, single_group={single_group}"
             )
 
-        # Open Pair Buy
-        # When direction="DOWN", this will be the unpaired buy (gets custom buy TP/SL)
-        # When direction="UP", this is part of pair (uses global TP/SL)
-        tp_override_buy = self.second_entry_buy_tp_pips if direction == "DOWN" else None
-        sl_override_buy = self.second_entry_buy_sl_pips if direction == "DOWN" else None
+        if direction == "UP":
+            # BBS: Buy1 (pair) + SingleSell (single_custom) + Buy2 (pair)
+            leg1_name, leg1_type, leg1_skip = "Buy1", "pair", True
+            leg1_tp_override, leg1_sl_override = None, None
+
+            leg2_name, leg2_type, leg2_skip = "SingleSell", "single_custom", False
+            leg2_tp_override, leg2_sl_override = self.second_entry_sell_tp_pips, self.second_entry_sell_sl_pips
+
+            leg3_dir = "buy"
+            leg3_name, leg3_type, leg3_skip = "Buy2", "pair", True
+            leg3_tp_override, leg3_sl_override = None, None
+        else:
+            # SSB: SingleBuy (single_custom) + Sell1 (pair) + Sell2 (pair)
+            leg1_name, leg1_type, leg1_skip = "SingleBuy", "single_custom", False
+            leg1_tp_override, leg1_sl_override = self.second_entry_buy_tp_pips, self.second_entry_buy_sl_pips
+
+            leg2_name, leg2_type, leg2_skip = "Sell1", "pair", True
+            leg2_tp_override, leg2_sl_override = None, None
+
+            leg3_dir = "sell"
+            leg3_name, leg3_type, leg3_skip = "Sell2", "pair", True
+            leg3_tp_override, leg3_sl_override = None, None
+
+        # Execute Leg 1 (Buy side of pair lot)
+        # Pair legs open with no TP/SL — anchor alignment sets them afterward.
+        # Single_custom legs use second_entry UI overrides directly from fill price.
         buy_results = await self._split_and_execute_orders(
-            "buy", pair_buy_lot, "PairBuy", target_price,
-            tp_pips_override=tp_override_buy,
-            sl_pips_override=sl_override_buy
+            "buy", pair_buy_lot, leg1_name, target_price,
+            tp_pips_override=leg1_tp_override,
+            sl_pips_override=leg1_sl_override,
+            skip_tp_sl=leg1_skip
         )
-        position_type_buy = 'single_custom' if direction == "DOWN" else 'pair'
         buy_tickets = []
         for (tkt, entry, tp, sl) in buy_results:
             if not tkt:
                 continue
             open_count += 1
             grid_level.positions[tkt] = {
-                'leg': 'PairBuy',
+                'leg': leg1_name,
                 'direction': 'buy',
                 'entry': entry,
                 'tp': tp,
                 'sl': sl,
                 'lot': pair_buy_lot,
-                'position_type': position_type_buy
+                'position_type': leg1_type
             }
             self.state.ticket_map[tkt] = grid_level.positions[tkt]
             self._init_touch_flags(tkt)
             self.activity_log.log_fire(
-                self.state.cycle_count, "PairBuy", entry,
+                self.state.cycle_count, leg1_name, entry,
                 pair_buy_lot, tp, sl, tkt
             )
             buy_tickets.append(tkt)
@@ -822,35 +847,31 @@ class GridBounceStrategyEngine:
                 if idd in self.state.ticket_map:
                     self.state.ticket_map[idd]['split_group_id'] = group_id
 
-        # Open Pair Sell
-        # When direction="UP", this will be the unpaired sell (gets custom sell TP/SL)
-        # When direction="DOWN", this is part of pair (uses global TP/SL)
-        tp_override_sell = self.second_entry_sell_tp_pips if direction == "UP" else None
-        sl_override_sell = self.second_entry_sell_sl_pips if direction == "UP" else None
+        # Execute Leg 2 (Sell side of pair lot)
         sell_results = await self._split_and_execute_orders(
-            "sell", pair_sell_lot, "PairSell", target_price,
-            tp_pips_override=tp_override_sell,
-            sl_pips_override=sl_override_sell
+            "sell", pair_sell_lot, leg2_name, target_price,
+            tp_pips_override=leg2_tp_override,
+            sl_pips_override=leg2_sl_override,
+            skip_tp_sl=leg2_skip
         )
-        position_type_sell = 'single_custom' if direction == "UP" else 'pair'
         sell_tickets = []
         for (tkt, entry, tp, sl) in sell_results:
             if not tkt:
                 continue
             open_count += 1
             grid_level.positions[tkt] = {
-                'leg': 'PairSell',
+                'leg': leg2_name,
                 'direction': 'sell',
                 'entry': entry,
                 'tp': tp,
                 'sl': sl,
                 'lot': pair_sell_lot,
-                'position_type': position_type_sell
+                'position_type': leg2_type
             }
             self.state.ticket_map[tkt] = grid_level.positions[tkt]
             self._init_touch_flags(tkt)
             self.activity_log.log_fire(
-                self.state.cycle_count, "PairSell", entry,
+                self.state.cycle_count, leg2_name, entry,
                 pair_sell_lot, tp, sl, tkt
             )
             sell_tickets.append(tkt)
@@ -861,72 +882,40 @@ class GridBounceStrategyEngine:
                 if idd in self.state.ticket_map:
                     self.state.ticket_map[idd]['split_group_id'] = group_id
 
-        # Open Single (direction-dependent)
-        if direction == "UP":
-            # Moving UP -> Single BUY (uses global TP/SL)
-            single_results = await self._split_and_execute_orders(
-                "buy", single_lot, "SingleBuy", target_price
+        # Execute Leg 3 (Single lot)
+        single_results = await self._split_and_execute_orders(
+            leg3_dir, single_lot, leg3_name, target_price,
+            tp_pips_override=leg3_tp_override,
+            sl_pips_override=leg3_sl_override,
+            skip_tp_sl=leg3_skip
+        )
+        single_tickets = []
+        for (tkt, entry, tp, sl) in single_results:
+            if not tkt:
+                continue
+            open_count += 1
+            grid_level.positions[tkt] = {
+                'leg': leg3_name,
+                'direction': leg3_dir,
+                'entry': entry,
+                'tp': tp,
+                'sl': sl,
+                'lot': single_lot,
+                'position_type': leg3_type
+            }
+            self.state.ticket_map[tkt] = grid_level.positions[tkt]
+            self._init_touch_flags(tkt)
+            self.activity_log.log_fire(
+                self.state.cycle_count, leg3_name, entry,
+                single_lot, tp, sl, tkt
             )
-            single_tickets = []
-            for (tkt, entry, tp, sl) in single_results:
-                if not tkt:
-                    continue
-                open_count += 1
-                grid_level.positions[tkt] = {
-                    'leg': 'SingleBuy',
-                    'direction': 'buy',
-                    'entry': entry,
-                    'tp': tp,
-                    'sl': sl,
-                    'lot': single_lot,
-                    'position_type': 'pair'
-                }
-                self.state.ticket_map[tkt] = grid_level.positions[tkt]
-                self._init_touch_flags(tkt)
-                self.activity_log.log_fire(
-                    self.state.cycle_count, "SingleBuy", entry,
-                    single_lot, tp, sl, tkt
-                )
-                single_tickets.append(tkt)
-            if len(single_tickets) > 1:
-                group_id = single_tickets[0]
-                self.state.split_group_map[group_id] = list(single_tickets)
-                for idd in single_tickets:
-                    if idd in self.state.ticket_map:
-                        self.state.ticket_map[idd]['split_group_id'] = group_id
-
-        elif direction == "DOWN":
-            # Moving DOWN -> Single SELL (uses global TP/SL)
-            single_results = await self._split_and_execute_orders(
-                "sell", single_lot, "SingleSell", target_price
-            )
-            single_tickets = []
-            for (tkt, entry, tp, sl) in single_results:
-                if not tkt:
-                    continue
-                open_count += 1
-                grid_level.positions[tkt] = {
-                    'leg': 'SingleSell',
-                    'direction': 'sell',
-                    'entry': entry,
-                    'tp': tp,
-                    'sl': sl,
-                    'lot': single_lot,
-                    'position_type': 'pair'
-                }
-                self.state.ticket_map[tkt] = grid_level.positions[tkt]
-                self._init_touch_flags(tkt)
-                self.activity_log.log_fire(
-                    self.state.cycle_count, "SingleSell", entry,
-                    single_lot, tp, sl, tkt
-                )
-                single_tickets.append(tkt)
-            if len(single_tickets) > 1:
-                group_id = single_tickets[0]
-                self.state.split_group_map[group_id] = list(single_tickets)
-                for idd in single_tickets:
-                    if idd in self.state.ticket_map:
-                        self.state.ticket_map[idd]['split_group_id'] = group_id
+            single_tickets.append(tkt)
+        if len(single_tickets) > 1:
+            group_id = single_tickets[0]
+            self.state.split_group_map[group_id] = list(single_tickets)
+            for idd in single_tickets:
+                if idd in self.state.ticket_map:
+                    self.state.ticket_map[idd]['split_group_id'] = group_id
 
         # Post-fill Volatility Check
         factor = self.volatility_tolerance_factor

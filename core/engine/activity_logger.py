@@ -13,10 +13,14 @@ from typing import Optional
 LEG_NAMES = {
       "CenterBuy": "Center Buy (Startup)",
       "CenterSell": "Center Sell (Startup)",
-      "PairBuy": "Pair Buy",
-      "PairSell": "Pair Sell",
-      "SingleBuy": "Single Buy",
-      "SingleSell": "Single Sell",
+      # UP direction (BBS): two buys + one sell
+      "Buy1": "Buy #1 (Pair)",
+      "SingleSell": "Single Sell (Custom)",
+      "Buy2": "Buy #2 (Pair)",
+      # DOWN direction (SSB): two sells + one buy
+      "SingleBuy": "Single Buy (Custom)",
+      "Sell1": "Sell #1 (Pair)",
+      "Sell2": "Sell #2 (Pair)",
   }
 
 

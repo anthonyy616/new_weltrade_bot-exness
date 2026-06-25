@@ -2,7 +2,7 @@
     "global": {
         "max_runtime_minutes": 540,
         "volatility_tolerance": "2.0",
-        "account_type": "Raw Spread"
+        "account_type": "Zero"
     },
     "symbols": {
         "EURUSD": {

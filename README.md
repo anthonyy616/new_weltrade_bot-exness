@@ -56,11 +56,12 @@ plain terms:
   **SL (Stop Loss)**    The price where a trade closes automatically to
                         limit a loss.
 
-  **Pair**              A matched Buy + Sell opened together at the same
+  **Pair**              A matched Buy + Buy OR Sell + Sell opened together at the same
                         price.
 
-  **Single**            One unpaired trade in the direction the price is
-                        moving.
+  **Single**            One unpaired trade in the opposite direction the price is
+                        moving e.g. if moving down and we're opening B S S
+                        the Single would be BUY and the 2 sells are considered the pairs.
 
   **Nuclear Reset**     All trades closed, new cycle starts from the
                         current price.
